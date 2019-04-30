@@ -38,6 +38,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class ItemView extends JFrame {
 
@@ -76,6 +79,7 @@ public class ItemView extends JFrame {
 	 * Create the frame.
 	 */
 	public ItemView() {
+		setResizable(false);
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent arg0) {
@@ -84,139 +88,118 @@ public class ItemView extends JFrame {
 		});
 		setTitle("Item");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 845, 739);
+		setBounds(100, 100, 845, 710);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(null);
 
 		lblItem = new JLabel("Item");
+		lblItem.setBounds(6, 6, 824, 92);
 		lblItem.setHorizontalAlignment(SwingConstants.CENTER);
 		lblItem.setFont(new Font("SansSerif", Font.PLAIN, 72));
-		lblItem.setBounds(6, 6, 824, 92);
-		contentPane.add(lblItem);
 
 		JPanel panel = new JPanel();
+		panel.setBounds(6, 110, 824, 214);
 		panel.setBorder(
 				new TitledBorder(null, "Insira os dados do item", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(6, 110, 824, 214);
-		contentPane.add(panel);
-		panel.setLayout(null);
 
 		JLabel lblId = new JLabel("id:");
 		lblId.setBounds(53, 46, 55, 16);
-		panel.add(lblId);
 
 		txtId = new JTextField();
 		txtId.setBounds(120, 40, 122, 28);
-		panel.add(txtId);
 		txtId.setEditable(false);
 		txtId.setText("id");
 		txtId.setColumns(10);
 
 		JLabel lblDescrio = new JLabel("Descri\u00E7\u00E3o:");
 		lblDescrio.setBounds(53, 85, 74, 16);
-		panel.add(lblDescrio);
 
 		txtDescricao = new JTextField();
 		txtDescricao.setBounds(120, 80, 577, 28);
-		panel.add(txtDescricao);
 		txtDescricao.setText("Descricao");
 		txtDescricao.setColumns(10);
 
 		try {
 			MaskFormatter maskFormatter = new MaskFormatter("##/##/#### ##:##:##");
 			frmtdtxtfldEntrada = new JFormattedTextField(maskFormatter);
+			frmtdtxtfldEntrada.setBounds(120, 120, 127, 28);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Data inválida\n\nTente novamente: " + e);
 			frmtdtxtfldEntrada.setText(null);
 			frmtdtxtfldEntrada.requestFocus();
 		}
-		frmtdtxtfldEntrada.setBounds(120, 120, 127, 28);
-		panel.add(frmtdtxtfldEntrada);
 
 		JLabel lblEntrada = new JLabel("Entrada:");
 		lblEntrada.setBounds(53, 126, 55, 16);
-		panel.add(lblEntrada);
 
 		JLabel lblSada = new JLabel("Saída:");
 		lblSada.setBounds(259, 126, 35, 16);
-		panel.add(lblSada);
 		try {
 			MaskFormatter maskFormatter = new MaskFormatter("##/##/#### ##:##:##");
 			frmtdtxtfldSaida = new JFormattedTextField(maskFormatter);
+			frmtdtxtfldSaida.setBounds(306, 120, 127, 28);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Data inválida\n\nTente novamente: " + e);
 			frmtdtxtfldSaida.setText(null);
 			frmtdtxtfldSaida.requestFocus();
 		}
-		frmtdtxtfldSaida.setBounds(306, 120, 127, 28);
-		panel.add(frmtdtxtfldSaida);
 		frmtdtxtfldSaida.setText("Saida");
 
 		JLabel lblStatus = new JLabel("Status:");
 		lblStatus.setBounds(445, 126, 38, 16);
-		panel.add(lblStatus);
 
 		txtQuem = new JTextField();
 		txtQuem.setBounds(120, 160, 363, 28);
-		panel.add(txtQuem);
 		txtQuem.setText("Quem");
 		txtQuem.setColumns(10);
 
 		JLabel lblQuem = new JLabel("Quem:");
 		lblQuem.setBounds(53, 166, 37, 16);
-		panel.add(lblQuem);
 
 		comboBoxStatus = new JComboBox();
 		comboBoxStatus.setBounds(489, 120, 150, 26);
-		panel.add(comboBoxStatus);
 		comboBoxStatus.setModel(new DefaultComboBoxModel(new String[] { "Pendente", "Em andamento", "Finalizado" }));
 		
 		JButton btnAtualizar = new JButton("Atualizar");
+		btnAtualizar.setBounds(709, 34, 90, 28);
 		btnAtualizar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				atualizar();
 			}
 		});
-		btnAtualizar.setBounds(709, 34, 90, 28);
-		panel.add(btnAtualizar);
 		btnAtualizar.setMnemonic('a');
 		
 		JButton btnNovo = new JButton("Novo");
+		btnNovo.setBounds(709, 74, 90, 28);
 		btnNovo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				novo();
 			}
 		});
-		btnNovo.setBounds(709, 74, 90, 28);
-		panel.add(btnNovo);
 		btnNovo.setMnemonic('n');
 		
 		JButton btnSalvar = new JButton("Salvar");
+		btnSalvar.setBounds(709, 114, 90, 28);
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				salvar();
 			}
 		});
-		btnSalvar.setBounds(709, 114, 90, 28);
-		panel.add(btnSalvar);
 		btnSalvar.setMnemonic('s');
 		
 		JButton btnDeletar = new JButton("Deletar");
+		btnDeletar.setBounds(709, 154, 90, 28);
 		btnDeletar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				deletar();
 			}
 		});
-		btnDeletar.setBounds(709, 154, 90, 28);
-		panel.add(btnDeletar);
 		btnDeletar.setMnemonic('d');
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(6, 336, 824, 368);
-		contentPane.add(scrollPane);
+		scrollPane.setBounds(6, 336, 824, 335);
 		
 		table = new JTable();
 		table.addKeyListener(new KeyAdapter() {
@@ -232,6 +215,27 @@ public class ItemView extends JFrame {
 			}
 		});
 		scrollPane.setViewportView(table);
+		panel.setLayout(null);
+		panel.add(lblId);
+		panel.add(txtId);
+		panel.add(btnAtualizar);
+		panel.add(lblDescrio);
+		panel.add(txtDescricao);
+		panel.add(btnNovo);
+		panel.add(lblEntrada);
+		panel.add(frmtdtxtfldEntrada);
+		panel.add(lblSada);
+		panel.add(frmtdtxtfldSaida);
+		panel.add(lblStatus);
+		panel.add(comboBoxStatus);
+		panel.add(btnSalvar);
+		panel.add(lblQuem);
+		panel.add(txtQuem);
+		panel.add(btnDeletar);
+		contentPane.setLayout(null);
+		contentPane.add(lblItem);
+		contentPane.add(panel);
+		contentPane.add(scrollPane);
 	}
 	
 	private void atualizar() {

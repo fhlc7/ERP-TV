@@ -1,5 +1,6 @@
 package com.tvcaxias.conexoes;
 
+import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
@@ -11,7 +12,8 @@ public class Conexao {
 		Connection con = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			con = DriverManager.getConnection("jdbc:mysql://localhost/erp_tv", "root", "fhlc123");
+			String servidorHost = InetAddress.getByName("DESKTOP-55DUIF2").toString().split("/")[1];
+			con = DriverManager.getConnection("jdbc:mysql://" + servidorHost + "/erp_tv", "cometa", "calango");
 			con.setAutoCommit(false);
 			System.out.println("Conectado com sucesso");
 		} catch (Exception e) {
