@@ -1,4 +1,4 @@
-package views;
+package com.tvcaxias.views;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -9,6 +9,10 @@ import javax.swing.text.MaskFormatter;
 
 import org.omg.IOP.CodecPackage.FormatMismatch;
 
+import com.tvcaxias.controles.ItemControle;
+import com.tvcaxias.entidades.Item;
+import com.tvcaxias.utils.FHLC;
+
 import javax.swing.UIManager;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -16,6 +20,8 @@ import javax.swing.JTextField;
 import javax.swing.JFormattedTextField;
 import java.awt.Font;
 import java.text.Format;
+import java.text.ParseException;
+import java.util.GregorianCalendar;
 import java.util.logging.SimpleFormatter;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -25,6 +31,9 @@ import javax.swing.JButton;
 import javax.swing.JTable;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.JScrollPane;
 
 public class ItemView extends JFrame {
 
@@ -63,6 +72,12 @@ public class ItemView extends JFrame {
 	 * Create the frame.
 	 */
 	public ItemView() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowOpened(WindowEvent arg0) {
+				atualizar();
+			}
+		});
 		setTitle("Item");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 852, 730);
@@ -107,14 +122,14 @@ public class ItemView extends JFrame {
 		txtDescricao.setColumns(10);
 
 		try {
-			MaskFormatter maskFormatter = new MaskFormatter("##/##/####");
+			MaskFormatter maskFormatter = new MaskFormatter("##/##/#### ##:##:##");
 			frmtdtxtfldEntrada = new JFormattedTextField(maskFormatter);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Data inválida\n\nTente novamente: " + e);
 			frmtdtxtfldEntrada.setText(null);
 			frmtdtxtfldEntrada.requestFocus();
 		}
-		frmtdtxtfldEntrada.setBounds(120, 120, 75, 28);
+		frmtdtxtfldEntrada.setBounds(120, 120, 127, 28);
 		panel.add(frmtdtxtfldEntrada);
 
 		JLabel lblEntrada = new JLabel("Entrada:");
@@ -122,26 +137,26 @@ public class ItemView extends JFrame {
 		panel.add(lblEntrada);
 
 		JLabel lblSada = new JLabel("Saída:");
-		lblSada.setBounds(207, 126, 35, 16);
+		lblSada.setBounds(259, 126, 35, 16);
 		panel.add(lblSada);
 		try {
-			MaskFormatter maskFormatter = new MaskFormatter("##/##/####");
+			MaskFormatter maskFormatter = new MaskFormatter("##/##/#### ##:##:##");
 			frmtdtxtfldSaida = new JFormattedTextField(maskFormatter);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Data inválida\n\nTente novamente: " + e);
 			frmtdtxtfldSaida.setText(null);
 			frmtdtxtfldSaida.requestFocus();
 		}
-		frmtdtxtfldSaida.setBounds(254, 120, 75, 28);
+		frmtdtxtfldSaida.setBounds(306, 120, 127, 28);
 		panel.add(frmtdtxtfldSaida);
 		frmtdtxtfldSaida.setText("Saida");
 
 		JLabel lblStatus = new JLabel("Status:");
-		lblStatus.setBounds(341, 127, 38, 16);
+		lblStatus.setBounds(445, 126, 38, 16);
 		panel.add(lblStatus);
 
 		txtQuem = new JTextField();
-		txtQuem.setBounds(120, 160, 421, 28);
+		txtQuem.setBounds(120, 160, 363, 28);
 		panel.add(txtQuem);
 		txtQuem.setText("Quem");
 		txtQuem.setColumns(10);
@@ -151,7 +166,7 @@ public class ItemView extends JFrame {
 		panel.add(lblQuem);
 
 		comboBoxStatus = new JComboBox();
-		comboBoxStatus.setBounds(391, 122, 150, 26);
+		comboBoxStatus.setBounds(489, 120, 150, 26);
 		panel.add(comboBoxStatus);
 		comboBoxStatus.setModel(new DefaultComboBoxModel(new String[] { "Pendente", "Em andamento", "Finalizado" }));
 		
@@ -180,24 +195,60 @@ public class ItemView extends JFrame {
 		panel.add(btnDeletar);
 		btnDeletar.setMnemonic('d');
 		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(6, 336, 824, 349);
+		contentPane.add(scrollPane);
+		
 		table = new JTable();
-		table.setBounds(6, 336, 824, 349);
-		contentPane.add(table);
+		scrollPane.setViewportView(table);
 	}
 	
 	private void atualizar() {
 		limpar();
+		recarregarTabela();
 		txtDescricao.requestFocus();
 	}
 	
 	private void limpar() {
 		txtId.setText(null);
 		txtDescricao.setText(null);
-		
+		frmtdtxtfldEntrada.setText(null);
+		frmtdtxtfldSaida.setText(null);
+		comboBoxStatus.setSelectedIndex(0);
+		txtQuem.setText(null);
 	}
 	
 	private void salvar() {
-		
+		if (txtDescricao.getText().trim().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Digite a descrição");
+			txtDescricao.requestFocus();
+			return;
+		}
+		Item item = new Item();
+		try {
+			item.setId(Long.valueOf(txtId.getText()));
+		} catch (NumberFormatException e1) {
+			item.setId(0);
+		}
+		item.setDescricao(txtDescricao.getText());
+		try {
+			item.setEntrada(FHLC.stringCalendar(frmtdtxtfldEntrada.getText()));
+		} catch (ParseException e) {
+			item.setEntrada(new GregorianCalendar());
+		}
+		try {
+			item.setSaida(FHLC.stringCalendar(frmtdtxtfldSaida.getText()));
+		} catch (ParseException e) {
+			item.setSaida(new GregorianCalendar());
+		}
+		item.setStatus(comboBoxStatus.getSelectedItem().toString());
+		item.setQuem(txtQuem.getText());
+		ItemControle.salvar(item);
+		atualizar();
+	}
+	
+	private void recarregarTabela() {
+		table.setModel(ItemControle.tabela());
 	}
 	
 }

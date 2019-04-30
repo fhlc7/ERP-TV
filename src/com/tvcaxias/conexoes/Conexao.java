@@ -1,4 +1,4 @@
-package conexoes;
+package com.tvcaxias.conexoes;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,4 +1,4 @@
-package entidades;
+package com.tvcaxias.entidades;
 
 import java.util.Calendar;
 
