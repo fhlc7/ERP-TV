@@ -34,6 +34,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JScrollPane;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class ItemView extends JFrame {
 
@@ -200,6 +204,18 @@ public class ItemView extends JFrame {
 		contentPane.add(scrollPane);
 		
 		table = new JTable();
+		table.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				edicaoTabela();
+			}
+		});
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				edicaoTabela();
+			}
+		});
 		scrollPane.setViewportView(table);
 	}
 	
@@ -230,7 +246,7 @@ public class ItemView extends JFrame {
 		} catch (NumberFormatException e1) {
 			item.setId(0);
 		}
-		item.setDescricao(txtDescricao.getText());
+		item.setDescricao(txtDescricao.getText().trim());
 		try {
 			item.setEntrada(FHLC.stringCalendar(frmtdtxtfldEntrada.getText()));
 		} catch (ParseException e) {
@@ -249,6 +265,23 @@ public class ItemView extends JFrame {
 	
 	private void recarregarTabela() {
 		ItemControle.tabela(table);
+	}
+	
+	private void edicaoTabela() {
+		long id = 0;
+		for (int i = 0; i < table.getColumnCount(); i++) {
+			if (table.getColumnName(i).equals("id")) {
+				id = Long.valueOf(table.getValueAt(table.getSelectedRow(), i).toString());
+				break;
+			}
+		}
+		Item item = ItemControle.get(id);
+		txtId.setText(String.valueOf(item.getId()));
+		txtDescricao.setText(item.getDescricao());
+		frmtdtxtfldEntrada.setText(FHLC.calendarString(item.getEntrada()));
+		frmtdtxtfldSaida.setText(FHLC.calendarString(item.getSaida()));
+		comboBoxStatus.setSelectedItem(item.getStatus());
+		txtQuem.setText(item.getQuem());
 	}
 	
 }

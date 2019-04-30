@@ -4,12 +4,16 @@ import java.awt.Color;
 import java.awt.Component;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Iterator;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.RowSorter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import com.tvcaxias.conexoes.Conexao;
 import com.tvcaxias.dao.ItemDAO;
@@ -18,14 +22,13 @@ import com.tvcaxias.utils.FHLC;
 
 public class ItemControle {
 
-	public static long salvar(Item item) {
+	public static Item salvar(Item item) {
 		Connection con = new Conexao().getConexao();
-		long id = 0;
 		try {
 			if (item.getId() <= 0) {
-				id = ItemDAO.inserir(con, item);
+				item = ItemDAO.inserir(con, item);
 			} else {
-				//alterar
+				ItemDAO.alterar(con, item);
 			}
 			con.commit();
 			JOptionPane.showMessageDialog(null, "Salvo com sucesso");
@@ -44,7 +47,7 @@ public class ItemControle {
 				e.printStackTrace();
 			}
 		}
-		return id;
+		return item;
 	}
 	
 	public static void tabela(JTable jTable) {
@@ -61,18 +64,49 @@ public class ItemControle {
 			}
 		};
 		// uma das maneiras de pintar a tabela
-//		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer() {
-//			@Override
-//			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-//					boolean hasFocus, int row, int column) {
-//				Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-//				
-//				comp.setBackground(Color.BLUE);
-//				
-//				return comp;
-//			}
-//		};
-//		jTable.setDefaultRenderer(Object.class, dtcr);
+		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer() {
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+					boolean hasFocus, int row, int column) {
+				
+				Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				
+				int status = 4;
+				for (int i = 0; i < jTable.getColumnCount(); i++) {
+					if (jTable.getColumnName(i).equals("Status")) {
+						status = i;
+						break;
+					}
+				}
+				
+				if (jTable.getValueAt(row, status).toString().equals("Pendente")) {
+					for (int i = 0; i < jTable.getColumnCount(); i++) {
+						comp.setBackground(Color.RED);
+						comp.setForeground(Color.BLACK);
+					}
+				} else if (jTable.getValueAt(row, status).toString().equals("Em andamento")) {
+					for (int i = 0; i < jTable.getColumnCount(); i++) {
+						comp.setBackground(Color.YELLOW);
+						comp.setForeground(Color.BLACK);
+					}
+				} else if (jTable.getValueAt(row, status).toString().equals("Finalizado")) {
+					for (int i = 0; i < jTable.getColumnCount(); i++) {
+						comp.setBackground(Color.BLUE);
+						comp.setForeground(Color.WHITE);
+					}
+				}
+//				else {
+//					for (int i = 0; i < jTable.getColumnCount(); i++) {
+//						comp.setBackground(null);
+//						comp.setForeground(Color.BLACK);
+//					}
+//				}
+				
+				return comp;
+			}
+		};
+		jTable.setDefaultRenderer(Object.class, dtcr);
+		/////////////////////////////////////////////////////////////////////
 		Connection con = new Conexao().getConexao();
 		try {
 			for (Item item : ItemDAO.selecionar(con)) {
@@ -101,11 +135,37 @@ public class ItemControle {
 				e.printStackTrace();
 			}
 		}
+		RowSorter<TableModel> rowSorter = new TableRowSorter<TableModel>(dtm);
+		jTable.setRowSorter(rowSorter);
 		jTable.setModel(dtm);
-		// eu acho esta a melhor maneira de pintar a tabela
-		Component comp = (Component) jTable.getCellRenderer(1, 1);
-		comp.setBackground(Color.BLUE);
-		
+		// eu acho esta a melhor maneira de pintar a tabela, o problema é que pinta tudo
+//		Component comp = (Component) jTable.getCellRenderer(1, 1);
+//		comp.setBackground(Color.BLUE);
+//		comp.setForeground(Color.WHITE);
+	}
+	
+	public static Item get(long id) {
+		Connection con = new Conexao().getConexao();
+		Item item = new Item();
+		try {
+			item = ItemDAO.get(con, id);
+			con.commit();
+		} catch (Exception e) {
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			JOptionPane.showMessageDialog(null, "Erro ao tentar retornar item");
+			e.printStackTrace();
+		} finally {			
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return item;
 	}
 	
 }

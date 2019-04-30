@@ -30,7 +30,7 @@ public class FHLC {
 	
 	public static String calendarString(Calendar dataCalendar) {
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		String dataString = dateFormat.format(dataCalendar.getTime()); 
+		String dataString = dateFormat.format(dataCalendar.getTime());
 		return dataString;
 	}
 	
