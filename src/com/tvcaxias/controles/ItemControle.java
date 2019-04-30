@@ -168,4 +168,29 @@ public class ItemControle {
 		return item;
 	}
 	
+	public static boolean deletar(long id) {
+		boolean r = false;
+		Connection con = new Conexao().getConexao();
+		try {
+			r = ItemDAO.deletar(con, id);
+			con.commit();
+			JOptionPane.showMessageDialog(null, "Deletado com sucesso");
+		} catch (Exception e) {
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			JOptionPane.showMessageDialog(null, "Erro ao tentar deletar");
+			e.printStackTrace();
+		} finally {			
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return r;
+	}
+	
 }

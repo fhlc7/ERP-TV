@@ -36,7 +36,7 @@ public class ItemDAO {
 	
 	public static boolean alterar(Connection con, Item item) throws SQLException {
 		String sql = "UPDATE item SET descricao = ?, entrada = ?, saida = ?, status = ?, quem = ? WHERE id = ?;";
-		PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+		PreparedStatement ps = con.prepareStatement(sql);
 		int i = 1;
 		ps.setString(i++, item.getDescricao());
 		ps.setObject(i++, FHLC.calendarTimestamp(item.getEntrada()));
@@ -88,6 +88,16 @@ public class ItemDAO {
 		rs.close();
 		ps.close();
 		return item;
+	}
+	
+	public static boolean deletar(Connection con, long id) throws SQLException {
+		String sql = "DELETE FROM item WHERE id = ?;";
+		PreparedStatement ps = con.prepareStatement(sql);
+		int i = 1;
+		ps.setLong(i++, id);
+		boolean r = ps.execute();
+		ps.close();
+		return r;
 	}
 	
 }

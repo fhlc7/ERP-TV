@@ -84,7 +84,7 @@ public class ItemView extends JFrame {
 		});
 		setTitle("Item");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 852, 730);
+		setBounds(100, 100, 845, 739);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -175,11 +175,21 @@ public class ItemView extends JFrame {
 		comboBoxStatus.setModel(new DefaultComboBoxModel(new String[] { "Pendente", "Em andamento", "Finalizado" }));
 		
 		JButton btnAtualizar = new JButton("Atualizar");
+		btnAtualizar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				atualizar();
+			}
+		});
 		btnAtualizar.setBounds(709, 34, 90, 28);
 		panel.add(btnAtualizar);
 		btnAtualizar.setMnemonic('a');
 		
 		JButton btnNovo = new JButton("Novo");
+		btnNovo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				novo();
+			}
+		});
 		btnNovo.setBounds(709, 74, 90, 28);
 		panel.add(btnNovo);
 		btnNovo.setMnemonic('n');
@@ -195,12 +205,17 @@ public class ItemView extends JFrame {
 		btnSalvar.setMnemonic('s');
 		
 		JButton btnDeletar = new JButton("Deletar");
+		btnDeletar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				deletar();
+			}
+		});
 		btnDeletar.setBounds(709, 154, 90, 28);
 		panel.add(btnDeletar);
 		btnDeletar.setMnemonic('d');
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(6, 336, 824, 349);
+		scrollPane.setBounds(6, 336, 824, 368);
 		contentPane.add(scrollPane);
 		
 		table = new JTable();
@@ -282,6 +297,22 @@ public class ItemView extends JFrame {
 		frmtdtxtfldSaida.setText(FHLC.calendarString(item.getSaida()));
 		comboBoxStatus.setSelectedItem(item.getStatus());
 		txtQuem.setText(item.getQuem());
+	}
+	
+	private void novo() {
+		limpar();
+		txtDescricao.requestFocus();
+	}
+	
+	private void deletar() {
+		if (txtId.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Selecione um item da tabela");
+		} else {
+			if (JOptionPane.showConfirmDialog(null, "Você tem certeza que deseja deletar?", "Sistema ERP TV", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+				ItemControle.deletar(Long.valueOf(txtId.getText()));
+				atualizar();
+			}
+		}
 	}
 	
 }
