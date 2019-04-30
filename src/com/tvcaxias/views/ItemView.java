@@ -248,7 +248,7 @@ public class ItemView extends JFrame {
 	}
 	
 	private void recarregarTabela() {
-		table.setModel(ItemControle.tabela());
+		ItemControle.tabela(table);
 	}
 	
 }

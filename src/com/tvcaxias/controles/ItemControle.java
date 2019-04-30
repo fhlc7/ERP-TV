@@ -1,9 +1,14 @@
 package com.tvcaxias.controles;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import com.tvcaxias.conexoes.Conexao;
@@ -42,7 +47,7 @@ public class ItemControle {
 		return id;
 	}
 	
-	public static DefaultTableModel tabela() {
+	public static void tabela(JTable jTable) {
 		DefaultTableModel dtm = new DefaultTableModel(null, new Object[] {
 				"id",
 				"Descrição",
@@ -53,8 +58,21 @@ public class ItemControle {
 				}) {
 			public boolean isCellEditable(int row, int column) {
 				return false;
-			};
+			}
 		};
+		// uma das maneiras de pintar a tabela
+//		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer() {
+//			@Override
+//			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+//					boolean hasFocus, int row, int column) {
+//				Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+//				
+//				comp.setBackground(Color.BLUE);
+//				
+//				return comp;
+//			}
+//		};
+//		jTable.setDefaultRenderer(Object.class, dtcr);
 		Connection con = new Conexao().getConexao();
 		try {
 			for (Item item : ItemDAO.selecionar(con)) {
@@ -83,7 +101,11 @@ public class ItemControle {
 				e.printStackTrace();
 			}
 		}
-		return dtm;
+		jTable.setModel(dtm);
+		// eu acho esta a melhor maneira de pintar a tabela
+		Component comp = (Component) jTable.getCellRenderer(1, 1);
+		comp.setBackground(Color.BLUE);
+		
 	}
 	
 }
