@@ -94,7 +94,7 @@ public class ItemView extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 
-		lblItem = new JLabel("Item");
+		lblItem = new JLabel("ToDo");
 		lblItem.setBounds(6, 6, 824, 92);
 		lblItem.setHorizontalAlignment(SwingConstants.CENTER);
 		lblItem.setFont(new Font("SansSerif", Font.PLAIN, 72));
